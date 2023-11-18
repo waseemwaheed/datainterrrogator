@@ -12,7 +12,7 @@ website:
         href: https://github.com/waseemwaheed
       - icon: linkedin
         href: https://www.linkedin.com/in/waseemwaheed/
-  google-analytics: G-K9LGM2ST2F
+  google-analytics: "G-K9LGM2ST2F"
 format:
   html:
     theme: slate
