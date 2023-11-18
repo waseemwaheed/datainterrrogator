@@ -1,0 +1,44 @@
+{
+  "index.qmd": {
+    "index.html": "341384ca"
+  },
+  "about.qmd": {
+    "about.html": "c421a27e"
+  },
+  "posts/A-little-trip-down-the-asset-management-lane/index.qmd": {
+    "index.html": "a5ba320f"
+  },
+  "posts/Benfords-Law/index.qmd": {
+    "index.html": "4e3f4ce7"
+  },
+  "posts/Coding-Challenge-Solution/index.qmd": {
+    "index.html": "3fe1a220"
+  },
+  "posts/D3js-Explorations-1/index.qmd": {
+    "index.html": "58e0d373"
+  },
+  "posts/D3js-Explorations-2/index.qmd": {
+    "index.html": "e9088e77"
+  },
+  "posts/D3js-Explorations-3/index.qmd": {
+    "index.html": "b4522c06"
+  },
+  "posts/D3js-Explorations-4/index.qmd": {
+    "index.html": "6ba126cd"
+  },
+  "posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.ipynb": {
+    "Efficient-Data-Analysis-SQL-and-Python.html": "47f5bfaf"
+  },
+  "posts/ID-Mapping-using-Selenium/index.qmd": {
+    "index.html": "f21009ba"
+  },
+  "posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.qmd": {
+    "index.html": "af2df441"
+  },
+  "posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.md": {
+    "index.html": "d259c630"
+  },
+  "posts/ML-Challenge/ML-Challenge.ipynb": {
+    "ML-Challenge.html": "4eba1134"
+  }
+}

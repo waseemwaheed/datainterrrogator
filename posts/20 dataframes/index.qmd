@@ -1,0 +1,15 @@
+---
+title: "DataFrame: data structures for data science"
+description: "Dataframes are ubiquitous data structures for data science work. In this post, I document my knowledge about various dataframes in Python."
+author: "Waseem Waheed"
+date: "18/11/2023"
+draft: true
+---
+
+# Introduction
+* pandas (numpy, arraw)
+* polars
+* dask
+* PySpark
+
+# 

@@ -1,0 +1,32 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: solana
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/waseemwaheed
+    - icon: github
+      text: Github
+      href: https://github.com/waseemwaheed
+
+---
+
+Hey there, I'm Waseem Waheed. By day, I dive into the world of Asset Management Engineering at VicTrack, where I'm constantly uncovering opportunities for improvement and making them a reality.
+
+But that's just part of my story. As a Sessional Academic at La Trobe University, I get to share my passion for various subjects like Natural Language Processing, Data Mining, Internet of Things, and Wireless Communications/Networking. It's incredibly rewarding to inspire and guide students in these dynamic fields.
+
+At the core of my journey lies a PhD in Image Processing, delving deep into the realm of continuous optimization techniques within signal and image processing. My research spans across Optimization, Signal and Image Processing, and Graph Theory, where I explore the intricate connections between these domains.
+
+My curiosity doesn't end there. I'm captivated by the vast landscape of data science, computer vision, natural language processing, programming, networking, and all things IT-related.
+
+Here's a snapshot of what I bring to the table:
+
+* Proficiency in Python for software engineering
+* Harnessing R and Python for predictive analytics
+* Diving into data analysis using SQL, R, Python, and even Excel
+* Crafting compelling insights through data visualization with PowerBI
+* And let's not forget the art of technical writing
+
+Join me on this journey where technology meets innovation, and let's explore the endless possibilities together.

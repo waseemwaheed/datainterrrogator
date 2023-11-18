@@ -1,0 +1,18 @@
+---
+title: "D3 - Visualizing temperature 2"
+author: "Waseem Waheed"
+date: "2017-07-03"
+categories: [data viz, d3]
+image: "map.png"
+---
+Today's post is a bit delayed, anyway, I went through the same data from [day 1](https://waseemwaheed.github.io/2017/06/29/D3js-1.html) (temperature measurements) but this time I, used leaflet.js instead of google maps API starting from from the [example](http://bl.ocks.org/d3noob/9267535). The beautiful thing about leaflet is that it doesn't abstract the whole DOM event-handling like in google maps which means events set using d3 are handled normally.
+
+I have manged to encoded the data in color, size and in text in the form of tool-tips.
+
+
+
+![](map.png)
+
+
+
+The code can be found at [here](https://github.com/waswas15/d3js-one-month-challenge/blob/master/day04.html)

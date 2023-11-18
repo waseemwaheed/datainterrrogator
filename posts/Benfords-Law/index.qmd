@@ -1,0 +1,15 @@
+---
+title: "Benford's Law"
+author: "Waseem Waheed"
+date: "2017-07-07"
+categories: [analysis, probability]
+image: "hist.jpg"
+---
+# Benford's law
+Few days ago, I was introduced to the Benford's law of distribution. Looking up the internet for accessible explanation, I came across a basic introduction with very interesting explanation on [Khan Academy](https://www.khanacademy.org/math/algebra2/exponential-and-logarithmic-functions/logarithmic-scale/v/vi-and-sal-talk-about-the-mysteries-of-benford-s-law). Sal mentioned the typical example of the world countries populations follow this fascinating distribution function.
+
+After few seconds of thinking about it, I decided to confirm this claim, So, I quickly pulled the data from wikipedia  and coded a quick and dirty experiment. And sure it works as you can see bellow
+
+![](hist.jpg)
+
+Code and data can be found in my [GitHub](https://github.com/waswas15/random_experiments)

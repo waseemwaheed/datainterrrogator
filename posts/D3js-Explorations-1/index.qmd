@@ -1,0 +1,24 @@
+---
+title: "D3 - Visualizing temperature 1"
+author: "Waseem Waheed"
+date: "2017-06-29"
+categories: [data viz, d3]
+image: "map.png"
+---
+
+This is the first day of the challenge but I have been tinkering with D3 for few days now.
+
+My first day started with an intention to project points on a map so, I had a look at few examples by they seemed complicated so I adjusted my aims from drawing the map with d3 to mapping the data with d3 and get the map from a map provider (google maps or leaflet). I started with an [example](https://gist.github.com/mbostock/899711) by Mike Bostock which is very accessible and I adapted it.
+My data that I had which is the locations of temperature sensors spread across the US (source : [GSOD](https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod)) as well as summary temperature measurement for one day. I'm happy with the result for today as I managed to project the sensors on the map and color coded the points based on temperature measurement.
+
+ My adapted version of the code can be found on my [github](https://github.com/waswas15/d3js-one-month-challenge)
+
+
+
+![](map.png)
+
+
+
+Future directions :
+1. Draw connections between nodes
+2. include a slider to select the day of the year.
