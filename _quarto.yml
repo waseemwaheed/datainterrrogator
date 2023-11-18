@@ -12,11 +12,11 @@ website:
         href: https://github.com/waseemwaheed
       - icon: linkedin
         href: https://www.linkedin.com/in/waseemwaheed/
+  google-analytics: G-K9LGM2ST2F
 format:
   html:
     theme: slate
     css: styles.css
 execute:
   freeze: auto
-google-analytics: G-K9LGM2ST2F
 cookie-consent: true
