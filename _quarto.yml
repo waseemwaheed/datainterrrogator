@@ -20,3 +20,5 @@ format:
 execute:
   freeze: auto
 cookie-consent: true
+resources:
+  - CNAME
