@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data Interrogator</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Data Interrogator</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/waseemwaheed" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/waseemwaheed/" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(12)</span></div><div class="category" data-category="Analytics">Analytics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Asset Management">Asset Management <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Data Structures">Data Structures <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Docker">Docker <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linux">Linux <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Machine Learning">Machine Learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Pandas">Pandas <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(5)</span></div><div class="category" data-category="SQL">SQL <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Selenium">Selenium <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Software Engineering">Software Engineering <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Tensorflow">Tensorflow <span class="quarto-category-count">(1)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="d3">d3 <span class="quarto-category-count">(4)</span></div><div class="category" data-category="data viz">data viz <span class="quarto-category-count">(5)</span></div><div class="category" data-category="probability">probability <span class="quarto-category-count">(1)</span></div></div></div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="Asset Management" data-listing-date-sort="1673787600000" data-listing-file-modified-sort="1700268490505" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5">
+<div class="thumbnail">
+<p><a href="./posts/A-little-trip-down-the-asset-management-lane/index.html"> <img src="./posts/A-little-trip-down-the-asset-management-lane/Processes.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/A-little-trip-down-the-asset-management-lane/index.html">
+<h3 class="no-anchor listing-title">
+A little trip down the asset management lane
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Asset Management'); return false;">
+Asset Management
+</div>
+</div>
+<a href="./posts/A-little-trip-down-the-asset-management-lane/index.html">
+<div class="listing-description">
+Th…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/A-little-trip-down-the-asset-management-lane/index.html">
+<div class="listing-date">
+Jan 16, 2023
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="Python,Machine Learning" data-listing-date-sort="1641733200000" data-listing-file-modified-sort="1700268490531" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="thumbnail">
+<p><a href="./posts/ML-Challenge/ML-Challenge.html"> <img src="./posts/ML-Challenge/map.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/ML-Challenge/ML-Challenge.html">
+<h3 class="no-anchor listing-title">
+Crop classification in Satellite imagry
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
+Python
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Machine Learning'); return false;">
+Machine Learning
+</div>
+</div>
+<a href="./posts/ML-Challenge/ML-Challenge.html">
+<div class="listing-description">
+As part of my ML practice, I…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/ML-Challenge/ML-Challenge.html">
+<div class="listing-date">
+Jan 10, 2022
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="data viz,Analytics" data-listing-date-sort="1630677600000" data-listing-file-modified-sort="1700268490523" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="thumbnail">
+<p><a href="./posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.html">
+<h3 class="no-anchor listing-title">
+Learning Analytics - Dashboard with Google Data Studio
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('data viz'); return false;">
+data viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Analytics'); return false;">
+Analytics
+</div>
+</div>
+<a href="./posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.html">
+<div class="listing-description">
+COVID-19 has had a significant impact on our lives as a whole. Most industries have suffered from unexpected shift in customers demand.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.html">
+<div class="listing-date">
+Sep 4, 2021
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="Python,Docker,Software Engineering,Data Structures" data-listing-date-sort="1628776800000" data-listing-file-modified-sort="1700268490508" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="thumbnail">
+<p><a href="./posts/Coding-Challenge-Solution/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Coding-Challenge-Solution/index.html">
+<h3 class="no-anchor listing-title">
+A solution to a coding challenge
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
+Python
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Docker'); return false;">
+Docker
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Software Engineering'); return false;">
+Software Engineering
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Data Structures'); return false;">
+Data Structures
+</div>
+</div>
+<a href="./posts/Coding-Challenge-Solution/index.html">
+<div class="listing-description">
+I have recently been invited to a coding challenge which was required to be delivered in 7 days. The task was very simple 😎:
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Coding-Challenge-Solution/index.html">
+<div class="listing-date">
+Aug 13, 2021
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="Python,SQL" data-listing-date-sort="1628517600000" data-listing-file-modified-sort="1700268490521" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8">
+<div class="thumbnail">
+<p><a href="./posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.html"> <p class="card-img-top"><img src="posts\Efficient-Data-Analysis-SQL-and-Python\Efficient-Data-Analysis-SQL-and-Python_files\figure-html\cell-20-output-2.png"  class="thumbnail-image card-img"/></p> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.html">
+<h3 class="no-anchor listing-title">
+Efficient Data Analysis - SQL and Python
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
+Python
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SQL'); return false;">
+SQL
+</div>
+</div>
+<a href="./posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.html">
+<div class="listing-description">
+Performing data analysis, in many cases, requires loading the data from a database. Database engines are optimized for the efficient handling of data storage and retrieval.…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.html">
+<div class="listing-date">
+Aug 10, 2021
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-categories="Python,Linux,Tensorflow,Software Engineering" data-listing-date-sort="1605358800000" data-listing-file-modified-sort="1700268490537" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2">
+<div class="thumbnail">
+<p><a href="./posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.html">
+<h3 class="no-anchor listing-title">
+Making the TITAN GTX GPU available to Tensorflow
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
+Python
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Linux'); return false;">
+Linux
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Tensorflow'); return false;">
+Tensorflow
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Software Engineering'); return false;">
+Software Engineering
+</div>
+</div>
+<a href="./posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.html">
+<div class="listing-description">
+This post is to document 📝 a process I had to go through. Installing Tensorflow on Ubuntu.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.html">
+<div class="listing-date">
+Nov 15, 2020
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-categories="Python,Pandas,Selenium" data-listing-date-sort="1565791200000" data-listing-file-modified-sort="1700268490522" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/ID-Mapping-using-Selenium/index.html"> <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div> </a></p>
+</div>
+<div class="body">
+<a href="./posts/ID-Mapping-using-Selenium/index.html">
+<h3 class="no-anchor listing-title">
+ID Mapping using Selenium
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Python'); return false;">
+Python
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Pandas'); return false;">
+Pandas
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Selenium'); return false;">
+Selenium
+</div>
+</div>
+<a href="./posts/ID-Mapping-using-Selenium/index.html">
+<div class="listing-description">
+At work, we have to keep track of the progress of students where each student is identified by their ID (matching by the name is a tricky thing and not reliable).
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/ID-Mapping-using-Selenium/index.html">
+<div class="listing-date">
+Aug 15, 2019
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-categories="analysis,probability" data-listing-date-sort="1499349600000" data-listing-file-modified-sort="1700268490507" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/Benfords-Law/index.html"> <img src="./posts/Benfords-Law/hist.jpg" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Benfords-Law/index.html">
+<h3 class="no-anchor listing-title">
+Benford’s Law
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('analysis'); return false;">
+analysis
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('probability'); return false;">
+probability
+</div>
+</div>
+<a href="./posts/Benfords-Law/index.html">
+<div class="listing-description">
+Few days ago, I…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Benfords-Law/index.html">
+<div class="listing-date">
+Jul 7, 2017
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-categories="data viz,d3" data-listing-date-sort="1499004000000" data-listing-file-modified-sort="1700268490518" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/D3js-Explorations-4/index.html"> <img src="./posts/D3js-Explorations-4/map.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/D3js-Explorations-4/index.html">
+<h3 class="no-anchor listing-title">
+D3 - Visualizing temperature 2
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('data viz'); return false;">
+data viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('d3'); return false;">
+d3
+</div>
+</div>
+<a href="./posts/D3js-Explorations-4/index.html">
+<div class="listing-description">
+Today’s post is a bit delayed, anyway, I went through the same data from day 1 (temperature…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/D3js-Explorations-4/index.html">
+<div class="listing-date">
+Jul 3, 2017
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-categories="data viz,d3" data-listing-date-sort="1498831200000" data-listing-file-modified-sort="1700268490517" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/D3js-Explorations-3/index.html"> <img src="./posts/D3js-Explorations-3/graph.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/D3js-Explorations-3/index.html">
+<h3 class="no-anchor listing-title">
+D3 - Visualizing connections
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('data viz'); return false;">
+data viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('d3'); return false;">
+d3
+</div>
+</div>
+<a href="./posts/D3js-Explorations-3/index.html">
+<div class="listing-description">
+Today work is my own go at arc diagrams replicating a worked example at Matthew Clemens’s blog post. My code can be found at Github
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/D3js-Explorations-3/index.html">
+<div class="listing-date">
+Jul 1, 2017
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-categories="data viz,d3" data-listing-date-sort="1498744800000" data-listing-file-modified-sort="1700268490511" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/D3js-Explorations-2/index.html"> <img src="./posts/D3js-Explorations-2/map.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/D3js-Explorations-2/index.html">
+<h3 class="no-anchor listing-title">
+D3 - Visualizing bike share stations on map
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('data viz'); return false;">
+data viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('d3'); return false;">
+d3
+</div>
+</div>
+<a href="./posts/D3js-Explorations-2/index.html">
+<div class="listing-description">
+I started today with a goal to plot data from Melbourne city particularly Melbourne Bike Share stations on google maps with marker size and color representing the size of the station and the availability of bikes…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/D3js-Explorations-2/index.html">
+<div class="listing-date">
+Jun 30, 2017
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="11" data-categories="data viz,d3" data-listing-date-sort="1498658400000" data-listing-file-modified-sort="1700268490509" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="thumbnail">
+<p><a href="./posts/D3js-Explorations-1/index.html"> <img src="./posts/D3js-Explorations-1/map.png" class="thumbnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/D3js-Explorations-1/index.html">
+<h3 class="no-anchor listing-title">
+D3 - Visualizing temperature 1
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('data viz'); return false;">
+data viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('d3'); return false;">
+d3
+</div>
+</div>
+<a href="./posts/D3js-Explorations-1/index.html">
+<div class="listing-description">
+This is the first day of the challenge but I have been tinkering with D3 for few days now.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/D3js-Explorations-1/index.html">
+<div class="listing-date">
+Jun 29, 2017
+</div>
+<div class="listing-author">
+Waseem Waheed
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

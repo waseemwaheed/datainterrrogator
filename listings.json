@@ -1,0 +1,19 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/posts/A-little-trip-down-the-asset-management-lane/index.html",
+      "/posts/ML-Challenge/ML-Challenge.html",
+      "/posts/Learning-Analytics-Dashboard-with-Google-Data-Studio/index.html",
+      "/posts/Coding-Challenge-Solution/index.html",
+      "/posts/Efficient-Data-Analysis-SQL-and-Python/Efficient-Data-Analysis-SQL-and-Python.html",
+      "/posts/Making-TITAN-GTX-GPU-available-to-Tensorflow/index.html",
+      "/posts/ID-Mapping-using-Selenium/index.html",
+      "/posts/Benfords-Law/index.html",
+      "/posts/D3js-Explorations-4/index.html",
+      "/posts/D3js-Explorations-3/index.html",
+      "/posts/D3js-Explorations-2/index.html",
+      "/posts/D3js-Explorations-1/index.html"
+    ]
+  }
+]

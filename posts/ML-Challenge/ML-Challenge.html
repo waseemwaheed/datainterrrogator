@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Waseem Waheed">
+<meta name="dcterms.date" content="2022-01-10">
+
+<title>Data Interrogator - Crop classification in Satellite imagry</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Data Interrogator</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/waseemwaheed" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/waseemwaheed/" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Crop classification in Satellite imagry</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Machine Learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Waseem Waheed </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 10, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#problem-description" id="toc-problem-description" class="nav-link active" data-scroll-target="#problem-description">Problem description</a></li>
+  <li><a href="#provided-code" id="toc-provided-code" class="nav-link" data-scroll-target="#provided-code">Provided code</a></li>
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a>
+  <ul class="collapse">
+  <li><a href="#mean-values-and--2-standard-deviations-of-all-the-bands-per-crop" id="toc-mean-values-and--2-standard-deviations-of-all-the-bands-per-crop" class="nav-link" data-scroll-target="#mean-values-and--2-standard-deviations-of-all-the-bands-per-crop">3. Mean values and +-2 standard deviations of all the bands per crop</a>
+  <ul class="collapse">
+  <li><a href="#other" id="toc-other" class="nav-link" data-scroll-target="#other">3.1 Other</a></li>
+  <li><a href="#sorghum" id="toc-sorghum" class="nav-link" data-scroll-target="#sorghum">3.2 Sorghum</a></li>
+  <li><a href="#cotton" id="toc-cotton" class="nav-link" data-scroll-target="#cotton">3.3 Cotton</a></li>
+  </ul></li>
+  <li><a href="#machine-learning-model-training" id="toc-machine-learning-model-training" class="nav-link" data-scroll-target="#machine-learning-model-training">4. Machine learning model training</a>
+  <ul class="collapse">
+  <li><a href="#step-1-baseline-model-multiclass-logistic-regression" id="toc-step-1-baseline-model-multiclass-logistic-regression" class="nav-link" data-scroll-target="#step-1-baseline-model-multiclass-logistic-regression">Step 1: Baseline model: Multiclass Logistic Regression</a></li>
+  <li><a href="#step-2-binary-classification-sorghum-vs-other" id="toc-step-2-binary-classification-sorghum-vs-other" class="nav-link" data-scroll-target="#step-2-binary-classification-sorghum-vs-other">Step 2: Binary classification (<em>Sorghum</em> vs <em>Other</em>)</a></li>
+  <li><a href="#step-3-binary-classification-with-random-forest" id="toc-step-3-binary-classification-with-random-forest" class="nav-link" data-scroll-target="#step-3-binary-classification-with-random-forest">Step 3: Binary classification with Random Forest</a></li>
+  <li><a href="#step-4-random-under--and-over-sampling" id="toc-step-4-random-under--and-over-sampling" class="nav-link" data-scroll-target="#step-4-random-under--and-over-sampling">Step 4: Random under- and over-sampling</a></li>
+  </ul></li>
+  <li><a href="#satellite-images" id="toc-satellite-images" class="nav-link" data-scroll-target="#satellite-images">5. Satellite images</a></li>
+  <li><a href="#reminder" id="toc-reminder" class="nav-link" data-scroll-target="#reminder">Reminder</a></li>
+  <li><a href="#observations" id="toc-observations" class="nav-link" data-scroll-target="#observations">Observations</a></li>
+  <li><a href="#data-and-training-observation" id="toc-data-and-training-observation" class="nav-link" data-scroll-target="#data-and-training-observation">Data and training observation</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>As part of my ML practice, I was sent an ML challenge to develope a classifier that classfies pixels of hyperspectral images into various crops, which is an instance of a common problem known as crop mapping.</p>
+<p>The satellite images in this instance are captured by the Sentinel-2 satellite.</p>
+<p><a href="https://en.wikipedia.org/wiki/Sentinel-2">Sentinel-2</a> is an earth observation mission by the European Space Agency.</p>
+<section id="problem-description" class="level1">
+<h1>Problem description</h1>
+<p>The following is the challenge description:</p>
+<blockquote class="blockquote">
+<p>You must implement a machine learning model to perform crop classification, and determine what crop types are grown where in an image of farm paddocks (also known as one-shot in-season crop classification).</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Sentinel-2 is a satellite that captures 12 different wavelengths of light (also known as bands) in an image. These range from visible light (red, green, blue) to infra-red. The values for each band changes depending upon the material/object that is on the ground.</p>
+</blockquote>
+</section>
+<section id="provided-code" class="level1">
+<h1>Provided code</h1>
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> PIL</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sklearn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_image(path):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(PIL.Image.<span class="bu">open</span>(path))[:, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bands <span class="op">=</span> [<span class="st">'B01'</span>, <span class="st">'B02'</span>, <span class="st">'B03'</span>, <span class="st">'B04'</span>, <span class="st">'B05'</span>, <span class="st">'B06'</span>, <span class="st">'B07'</span>, <span class="st">'B08'</span>, <span class="st">'B8A'</span>, <span class="st">'B09'</span>, <span class="st">'B11'</span>, <span class="st">'B12'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="solution" class="level1">
+<h1>Solution</h1>
+<p>After reading the problem description carefully, we start by loading the provided dataset</p>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, accuracy_score, roc_curve, auc, ConfusionMatrixDisplay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.pipeline <span class="im">import</span> make_pipeline <span class="im">as</span> make_pipeline_with_sampler</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.under_sampling <span class="im">import</span> RandomUnderSampler</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.over_sampling <span class="im">import</span> SMOTE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>DATA_FILE <span class="op">=</span> <span class="st">"DATA/pixels.csv"</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(DATA_FILE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-outputid="1c7f334f-767f-4ca2-e6da-17d7f3a86218" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 299894 entries, 0 to 299893
+Data columns (total 15 columns):
+ #   Column      Non-Null Count   Dtype  
+---  ------      --------------   -----  
+ 0   B01         299894 non-null  float64
+ 1   B02         299894 non-null  float64
+ 2   B03         299894 non-null  float64
+ 3   B04         299894 non-null  float64
+ 4   B05         299894 non-null  float64
+ 5   B06         299894 non-null  float64
+ 6   B07         299894 non-null  float64
+ 7   B08         299894 non-null  float64
+ 8   B8A         299894 non-null  float64
+ 9   B09         299894 non-null  float64
+ 10  B11         299894 non-null  float64
+ 11  B12         299894 non-null  float64
+ 12  label_id    299894 non-null  int64  
+ 13  cloud_prob  299894 non-null  float64
+ 14  label       299894 non-null  object 
+dtypes: float64(13), int64(1), object(1)
+memory usage: 34.3+ MB</code></pre>
+</div>
+</div>
+<p>No null columns, thats good.</p>
+<div class="cell" data-outputid="a48965c1-578a-4483-b7d9-e0ec08af349d" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data[<span class="st">'label_id'</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>array([1, 0, 2], dtype=int64)</code></pre>
+</div>
+</div>
+<p>There are 3 labels.</p>
+<p>Let’s check the label counts.</p>
+<div class="cell" data-outputid="87f00ace-154b-4f5f-d123-5f06cc2159d3" data-execution_count="11">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data.groupby([<span class="st">'label'</span>,<span class="st">'label_id'</span>]).size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>label    label_id
+Cotton   2            11087
+Other    0           275350
+Sorghum  1            13457
+dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>labels2ids <span class="op">=</span> {<span class="st">'Other'</span> : <span class="dv">0</span> , <span class="st">'Sorghum'</span>:<span class="dv">1</span>, <span class="st">'Cotton'</span>:<span class="dv">2</span>}</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>ids2labels <span class="op">=</span> {value:key <span class="cf">for</span> key,value <span class="kw">in</span> labels2ids.items()}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The labels are imbalanced.</p>
+<p>Let’s remove rows with cloud probability greater than 2 and check the counts again</p>
+<div class="cell" data-outputid="9e27a5ac-bf27-4911-d27b-b202ac058105" data-execution_count="13">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data_no_clouds <span class="op">=</span> data[data[<span class="st">'cloud_prob'</span>]<span class="op">&lt;=</span><span class="dv">2</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">"with clouds: "</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(data)), <span class="st">"without clouds: "</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(data_no_clouds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>('with clouds: 299894', 'without clouds: 297351')</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="98d6b1d8-4ba2-4d1b-8031-ca5facc526bc" data-execution_count="14">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_no_clouds.groupby([<span class="st">'label'</span>,<span class="st">'label_id'</span>]).size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>label    label_id
+Cotton   2            11087
+Other    0           272879
+Sorghum  1            13385
+dtype: int64</code></pre>
+</div>
+</div>
+<p>Let’s check the data ranges of features.</p>
+<div class="cell" data-outputid="47bcc3a7-14db-4cf5-a97d-73b8787c8366" data-execution_count="15">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data_no_clouds.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">B01</th>
+<th data-quarto-table-cell-role="th">B02</th>
+<th data-quarto-table-cell-role="th">B03</th>
+<th data-quarto-table-cell-role="th">B04</th>
+<th data-quarto-table-cell-role="th">B05</th>
+<th data-quarto-table-cell-role="th">B06</th>
+<th data-quarto-table-cell-role="th">B07</th>
+<th data-quarto-table-cell-role="th">B08</th>
+<th data-quarto-table-cell-role="th">B8A</th>
+<th data-quarto-table-cell-role="th">B09</th>
+<th data-quarto-table-cell-role="th">B11</th>
+<th data-quarto-table-cell-role="th">B12</th>
+<th data-quarto-table-cell-role="th">label_id</th>
+<th data-quarto-table-cell-role="th">cloud_prob</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+<td>297351.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>0.061849</td>
+<td>0.076644</td>
+<td>0.097624</td>
+<td>0.109417</td>
+<td>0.139290</td>
+<td>0.193856</td>
+<td>0.217530</td>
+<td>0.226073</td>
+<td>0.235409</td>
+<td>0.249065</td>
+<td>0.255259</td>
+<td>0.204514</td>
+<td>0.119586</td>
+<td>0.041271</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>0.026723</td>
+<td>0.029300</td>
+<td>0.031394</td>
+<td>0.046590</td>
+<td>0.040789</td>
+<td>0.060590</td>
+<td>0.084279</td>
+<td>0.085944</td>
+<td>0.087007</td>
+<td>0.095317</td>
+<td>0.077941</td>
+<td>0.085845</td>
+<td>0.424096</td>
+<td>0.234945</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>0.005600</td>
+<td>0.005500</td>
+<td>0.008900</td>
+<td>0.007200</td>
+<td>0.014600</td>
+<td>0.036000</td>
+<td>0.045900</td>
+<td>0.044500</td>
+<td>0.050200</td>
+<td>0.044700</td>
+<td>0.024500</td>
+<td>0.019300</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>0.048600</td>
+<td>0.061100</td>
+<td>0.079700</td>
+<td>0.080000</td>
+<td>0.115600</td>
+<td>0.157400</td>
+<td>0.170000</td>
+<td>0.177600</td>
+<td>0.186900</td>
+<td>0.189800</td>
+<td>0.206000</td>
+<td>0.135400</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>0.060800</td>
+<td>0.074900</td>
+<td>0.098000</td>
+<td>0.105200</td>
+<td>0.139900</td>
+<td>0.188700</td>
+<td>0.203800</td>
+<td>0.213800</td>
+<td>0.222500</td>
+<td>0.225300</td>
+<td>0.247500</td>
+<td>0.210300</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>0.077300</td>
+<td>0.096900</td>
+<td>0.118000</td>
+<td>0.147800</td>
+<td>0.167300</td>
+<td>0.231300</td>
+<td>0.257900</td>
+<td>0.266400</td>
+<td>0.277400</td>
+<td>0.293550</td>
+<td>0.320500</td>
+<td>0.283300</td>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>0.519100</td>
+<td>0.460400</td>
+<td>0.401200</td>
+<td>0.570000</td>
+<td>0.585900</td>
+<td>0.573100</td>
+<td>0.603300</td>
+<td>0.617200</td>
+<td>0.626500</td>
+<td>1.002700</td>
+<td>0.555100</td>
+<td>0.532600</td>
+<td>2.000000</td>
+<td>2.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-outputid="822f08fc-b5c6-4517-ca39-5bf412f677eb" data-execution_count="16">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>data_no_clouds[bands].hist(figsize<span class="op">=</span>(<span class="dv">5</span> , <span class="dv">35</span>), bins<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, layout<span class="op">=</span>(<span class="dv">14</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>array([[&lt;AxesSubplot:title={'center':'B01'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B02'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B03'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B04'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B05'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B06'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B07'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B08'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B8A'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B09'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B11'}&gt;],
+       [&lt;AxesSubplot:title={'center':'B12'}&gt;],
+       [&lt;AxesSubplot:&gt;],
+       [&lt;AxesSubplot:&gt;]], dtype=object)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-17-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<section id="mean-values-and--2-standard-deviations-of-all-the-bands-per-crop" class="level2">
+<h2 class="anchored" data-anchor-id="mean-values-and--2-standard-deviations-of-all-the-bands-per-crop">3. Mean values and +-2 standard deviations of all the bands per crop</h2>
+<section id="other" class="level3">
+<h3 class="anchored" data-anchor-id="other">3.1 Other</h3>
+<p>To plot the <span class="math inline">\(∓2σ\)</span> standard deviations, we can plot box plots with the whiskers of the boxes at the <span class="math inline">\(∓2σ\)</span> by setting the whiskers to the percentiles 2.28, 97.72 <a href="https://en.wikipedia.org/wiki/Percentile">Source</a></p>
+<div class="cell" data-execution_count="17">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_means_and_stds(data):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  ax, bp <span class="op">=</span> data[bands].boxplot(whis<span class="op">=</span>[<span class="fl">2.28</span>, <span class="fl">97.72</span>], vert<span class="op">=</span><span class="va">False</span>, showmeans<span class="op">=</span><span class="va">True</span>, figsize<span class="op">=</span>(<span class="dv">15</span>,<span class="dv">15</span>), return_type<span class="op">=</span><span class="st">"both"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  means <span class="op">=</span> data[bands].mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  stds <span class="op">=</span> data[bands].std(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i, line <span class="kw">in</span> <span class="bu">enumerate</span>(bp[<span class="st">'medians'</span>]):</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      x, y <span class="op">=</span> line.get_xydata()[<span class="dv">1</span>]</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      text <span class="op">=</span> <span class="st">'-2σ=</span><span class="sc">{:.2f}</span><span class="st">, μ=</span><span class="sc">{:.2f}</span><span class="st">, +2σ=</span><span class="sc">{:.2f}</span><span class="st">'</span>.<span class="bu">format</span>(means[i]<span class="op">-</span><span class="dv">2</span><span class="op">*</span>stds[i], means[i], means[i]<span class="op">+</span><span class="dv">2</span><span class="op">*</span>stds[i])</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>      ax.annotate(text, xy<span class="op">=</span>(<span class="bu">max</span>(<span class="dv">0</span>, x<span class="op">-</span><span class="fl">0.07</span>), y<span class="op">+</span><span class="fl">0.07</span>))</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  ax.set_xlim(<span class="dv">0</span>, <span class="fl">1.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-outputid="a2acd0ad-c095-4c8c-b152-d2c14d043012" data-execution_count="18">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data_other <span class="op">=</span> data_no_clouds[data_no_clouds[<span class="st">'label'</span>] <span class="op">==</span> <span class="st">'Other'</span>]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>plot_means_and_stds(data_other)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="sorghum" class="level3">
+<h3 class="anchored" data-anchor-id="sorghum">3.2 Sorghum</h3>
+<div class="cell" data-outputid="e9ca411f-e969-470b-c203-74538aae42f1" data-execution_count="19">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data_sorghum <span class="op">=</span> data_no_clouds[data_no_clouds[<span class="st">'label'</span>] <span class="op">==</span> <span class="st">'Sorghum'</span>]</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>plot_means_and_stds(data_sorghum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="cotton" class="level3">
+<h3 class="anchored" data-anchor-id="cotton">3.3 Cotton</h3>
+<div class="cell" data-outputid="e1fa2152-4d6d-4fa2-e8b1-5e66446284b5" data-execution_count="20">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>data_cotton <span class="op">=</span> data_no_clouds[data_no_clouds[<span class="st">'label'</span>] <span class="op">==</span> <span class="st">'Cotton'</span>]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>plot_means_and_stds(data_cotton)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-21-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This figure is promising as the values in the bands B6-B9 seem to be distinguishing features for the cotton crop.</p>
+</section>
+</section>
+<section id="machine-learning-model-training" class="level2">
+<h2 class="anchored" data-anchor-id="machine-learning-model-training">4. Machine learning model training</h2>
+<section id="step-1-baseline-model-multiclass-logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-baseline-model-multiclass-logistic-regression">Step 1: Baseline model: Multiclass Logistic Regression</h3>
+<p>The first model I am going to try is the multiclass logistic regression for it’s simplicity to get an idea about the possible accuracy.</p>
+<div class="cell" data-execution_count="21">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train_test_assess(data, model):</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> data[data.columns[<span class="op">~</span>data.columns.isin([<span class="st">'label_id'</span>, <span class="st">'label'</span>, <span class="st">'cloud_prob'</span>])]]</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> data[<span class="st">'label_id'</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> [ids2labels[<span class="bu">id</span>] <span class="cf">for</span> <span class="bu">id</span> <span class="kw">in</span> <span class="bu">sorted</span>(data[<span class="st">'label_id'</span>].unique().tolist())]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train, y_train)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    y_predicted <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Accuracy: </span><span class="sc">{:.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(accuracy_score(y_predicted, y_test)<span class="op">*</span><span class="dv">100</span> ))</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    ConfusionMatrixDisplay.from_estimator(model, X_test, y_test, display_labels<span class="op">=</span>labels)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># if binary classification, report the AUC metric</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(labels) <span class="op">==</span> <span class="dv">2</span>:</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>        fpr, tpr, thresholds <span class="op">=</span> roc_curve(y_test<span class="op">==</span><span class="dv">1</span>, y_predicted<span class="op">==</span><span class="dv">1</span>, pos_label<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'AUC: </span><span class="sc">{:.2f}</span><span class="st">'</span>.<span class="bu">format</span>(auc(fpr, tpr)))</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-outputid="17ff3bb5-7f91-4393-82a1-49b907e920f6" data-execution_count="22">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> LogisticRegression(max_iter<span class="op">=</span><span class="dv">10000</span>, multi_class<span class="op">=</span><span class="st">'multinomial'</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> train_test_assess(data_no_clouds, clf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 95.48%</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>This initial result is consistent with our initial intuition, <em>Cotton</em> is easier classify than <em>Other</em> and <em>Sorghum</em>.</p>
+<p>It might a good idea to search the literature at this point for discriminative features.</p>
+<p>I’m going to attempt to try to focus on the <em>Sorghum</em> vs <em>Other</em> problem next.</p>
+</section>
+<section id="step-2-binary-classification-sorghum-vs-other" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-binary-classification-sorghum-vs-other">Step 2: Binary classification (<em>Sorghum</em> vs <em>Other</em>)</h3>
+<div class="cell" data-execution_count="23">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>data_bin <span class="op">=</span> data_no_clouds[<span class="op">~</span>data_no_clouds[<span class="st">'label'</span>].isin([<span class="st">'Cotton'</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-outputid="1e213919-1402-4e20-b1de-8c0e090e0015" data-execution_count="24">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>data_bin[<span class="st">'label'</span>].value_counts()<span class="op">/</span>data_bin.shape[<span class="dv">0</span>] <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>Other      95.324246
+Sorghum     4.675754
+Name: label, dtype: float64</code></pre>
+</div>
+</div>
+<p>The data is highly imbalanced, as a first attempt to fix that, let’s try to add weights.</p>
+</section>
+<section id="step-3-binary-classification-with-random-forest" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-binary-classification-with-random-forest">Step 3: Binary classification with Random Forest</h3>
+<section id="step-3.1-binary-classification-with-random-forest-and-remote-sensing" class="level4">
+<h4 class="anchored" data-anchor-id="step-3.1-binary-classification-with-random-forest-and-remote-sensing">Step 3.1: Binary classification with Random Forest and Remote Sensing</h4>
+<p>Next, we test the benefit of adding NDVI and NDWI indices</p>
+<p>NDVI: The normalized difference vegetation index, an effective index for quantifying green vegetation.</p>
+<p>NDWI: The normalized difference water index used to monitor changes related to water content in water bodies.</p>
+<p>NDMI: The normalized difference moisture index used to monitor changes in water content of leaves.</p>
+<p>For a full list of remote sensing indices https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/indexdb/</p>
+<div class="cell" data-execution_count="25">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>data_bin_aug <span class="op">=</span> data_bin.copy()</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate NDVI according to https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/ndvi/</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'NDVI'</span>] <span class="op">=</span> (data_bin[<span class="st">'B08'</span>] <span class="op">-</span> data_bin[<span class="st">'B04'</span>])<span class="op">/</span>(data_bin[<span class="st">'B08'</span>] <span class="op">+</span> data_bin[<span class="st">'B04'</span>])</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate NDWI according to https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/ndwi/</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'NDWI'</span>] <span class="op">=</span> (data_bin[<span class="st">'B03'</span>] <span class="op">-</span> data_bin[<span class="st">'B08'</span>])<span class="op">/</span>(data_bin[<span class="st">'B03'</span>] <span class="op">+</span> data_bin[<span class="st">'B08'</span>])</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate NDMI according to https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/ndmi/</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'NDMI'</span>] <span class="op">=</span> (data_bin[<span class="st">'B08'</span>] <span class="op">-</span> data_bin[<span class="st">'B11'</span>])<span class="op">/</span>(data_bin[<span class="st">'B08'</span>] <span class="op">+</span> data_bin[<span class="st">'B11'</span>])</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate NDMI according to https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/gndvi/#</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'GNDVI'</span>] <span class="op">=</span> (data_bin[<span class="st">'B08'</span>] <span class="op">-</span> data_bin[<span class="st">'B03'</span>])<span class="op">/</span>(data_bin[<span class="st">'B08'</span>] <span class="op">+</span> data_bin[<span class="st">'B03'</span>])</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co"># source : https://eprints.lancs.ac.uk/id/eprint/136586/2/Author_Accepted_Manuscript.pdf</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'GCVI'</span>] <span class="op">=</span> (data_bin[<span class="st">'B8A'</span>] <span class="op">/</span> data_bin[<span class="st">'B03'</span>]) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'SR'</span>] <span class="op">=</span> data_bin[<span class="st">'B8A'</span>] <span class="op">/</span> data_bin[<span class="st">'B04'</span>]</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>data_bin_aug[<span class="st">'WDRVI'</span>] <span class="op">=</span> (<span class="fl">0.2</span><span class="op">*</span>data_bin[<span class="st">'B8A'</span>] <span class="op">-</span> data_bin[<span class="st">'B04'</span>])<span class="op">/</span>(<span class="fl">0.2</span><span class="op">*</span>data_bin[<span class="st">'B8A'</span>] <span class="op">+</span> data_bin[<span class="st">'B04'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="step-4-random-under--and-over-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-random-under--and-over-sampling">Step 4: Random under- and over-sampling</h3>
+<p>To solve the data imbalance issue, let’s use resampling techinques.</p>
+<p>First we are going to start by under-sampling, that is to randomly pick samples from the majority group such that the majority and minority classes become of the same size.</p>
+<div class="cell" data-execution_count="26">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Features importances</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_feats_importances(model, data):</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    imps <span class="op">=</span> <span class="bu">list</span>(model.feature_importances_<span class="op">/</span><span class="bu">sum</span>(model.feature_importances_) <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    feats <span class="op">=</span> data.columns[<span class="op">~</span>data.columns.isin([<span class="st">'label_id'</span>, <span class="st">'label'</span>, <span class="st">'cloud_prob'</span>])]</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    feats_imps <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(feats, imps))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> feats_imps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><strong>Undersampling</strong></p>
+<div class="cell" data-outputid="13ffa52e-6bff-43c7-f3be-4314f6a3c8bb" data-execution_count="27">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Class count</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Class distribution: </span><span class="ch">\n</span><span class="st">'</span><span class="op">+</span><span class="bu">str</span>(data_bin[<span class="st">'label'</span>].value_counts()))</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>clf_bin5 <span class="op">=</span> make_pipeline_with_sampler(</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    RandomUnderSampler(),</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier(),</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>clf_bin5 <span class="op">=</span> train_test_assess(data_bin_aug, clf_bin5)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>calc_feats_importances(clf_bin5[<span class="dv">1</span>], data_bin_aug)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Class distribution: 
+Other      272879
+Sorghum     13385
+Name: label, dtype: int64
+Accuracy: 93.74%
+AUC: 0.96</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>{'B01': 16.977792737026085,
+ 'B02': 6.752882418570922,
+ 'B03': 2.554969210163749,
+ 'B04': 2.6563337118232186,
+ 'B05': 3.3259631537606507,
+ 'B06': 3.9223474314521467,
+ 'B07': 3.8106562700819713,
+ 'B08': 3.5390293533814705,
+ 'B8A': 4.125422731372653,
+ 'B09': 11.247041256299674,
+ 'B11': 6.183133344698969,
+ 'B12': 8.360377618059259,
+ 'NDVI': 3.579062573810352,
+ 'NDWI': 4.239217235594501,
+ 'NDMI': 4.276727881317791,
+ 'GNDVI': 4.767229788099875,
+ 'GCVI': 3.348787865016853,
+ 'SR': 3.351913622009852,
+ 'WDRVI': 2.9811117974600068}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-28-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Since features B03, B04, B05, B07, B08 seem to have the least effect, let’s try removing them</p>
+<div class="cell" data-outputid="328e7b72-1c88-4915-d465-c74f8e2b3416" data-execution_count="28">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Class count</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>clf_bin6 <span class="op">=</span> make_pipeline_with_sampler(</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    RandomUnderSampler(),</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier(),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># remove the less important features</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>data_bin_imp <span class="op">=</span> data_bin_aug.copy()</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>data_bin_imp <span class="op">=</span> data_bin_imp[data_bin_imp.columns[<span class="op">~</span>data_bin_imp.columns.isin([<span class="st">'B03'</span>, <span class="st">'B04'</span>, <span class="st">'B05'</span>, <span class="st">'B07'</span> ,<span class="st">'B08'</span>])]]</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>clf_bin6 <span class="op">=</span> train_test_assess(data_bin_imp, clf_bin6)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>calc_feats_importances(clf_bin6[<span class="dv">1</span>], data_bin_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 93.56%
+AUC: 0.95</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>{'B01': 18.12897209994457,
+ 'B02': 7.237858677151985,
+ 'B06': 6.580060537808315,
+ 'B8A': 6.095497050380915,
+ 'B09': 12.43070752907386,
+ 'B11': 8.321135912566861,
+ 'B12': 9.327024620656,
+ 'NDVI': 4.785401272622748,
+ 'NDWI': 4.975197715869764,
+ 'NDMI': 5.109331237453354,
+ 'GNDVI': 5.734742204540842,
+ 'GCVI': 4.490255452417144,
+ 'SR': 3.3861633080797793,
+ 'WDRVI': 3.3976523814338675}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-29-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Next, I will test the accuracy on the full data (including Sorghum)</p>
+<div class="cell" data-outputid="9facd8a5-229a-4860-ef31-956865dcf87d" data-execution_count="29">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>clf8 <span class="op">=</span> make_pipeline_with_sampler(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    RandomUnderSampler(),</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier(),</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>clf8 <span class="op">=</span> train_test_assess(data_no_clouds, clf8)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>calc_feats_importances(clf8[<span class="dv">1</span>], data_no_clouds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 94.46%</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>{'B01': 9.6464853828485,
+ 'B02': 9.714544169136957,
+ 'B03': 2.7639361993439553,
+ 'B04': 8.411027820590892,
+ 'B05': 2.6418393007109287,
+ 'B06': 4.068313242872104,
+ 'B07': 12.051608284154835,
+ 'B08': 18.782597265383384,
+ 'B8A': 12.360924465779007,
+ 'B09': 8.479810816147658,
+ 'B11': 4.532715522991699,
+ 'B12': 6.546197530040068}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-30-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<p>I am going to pick the model with RandomDownSampler as it gives satisfactory results for the current data, the next step is a feature selection process.</p>
+<div class="cell" data-execution_count="30">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data_bin_aug[data_bin_aug.columns[<span class="op">~</span>data_bin_aug.columns.isin([<span class="st">'label_id'</span>, <span class="st">'label'</span>, <span class="st">'cloud_prob'</span>])]]</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> data_bin_aug[<span class="st">'label_id'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-outputid="d3e8dffd-44f6-43dd-dc65-ccf24257c16b" data-execution_count="31">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source: https://imbalanced-learn.org/stable/under_sampling.html</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imblearn.under_sampling <span class="im">import</span> RandomUnderSampler </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">sorted</span>(Counter(y).items()))</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>cc <span class="op">=</span> RandomUnderSampler(random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>X_resampled, y_resampled <span class="op">=</span> cc.fit_resample(X, y)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">sorted</span>(Counter(y_resampled).items()))</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X_resampled, y_resampled, test_size<span class="op">=</span><span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[(0, 272879), (1, 13385)]
+[(0, 13385), (1, 13385)]</code></pre>
+</div>
+</div>
+<p>Next, we perform feature selection to find the most important features.</p>
+<div class="cell" data-execution_count="32">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># source: https://scikit-learn.org/stable/auto_examples/feature_selection/plot_rfe_with_cross_validation.html#sphx-glr-auto-examples-feature-selection-plot-rfe-with-cross-validation-py</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> StratifiedKFold</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_selection <span class="im">import</span> RFECV</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the RFE object and compute a cross-validated score.</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>svc <span class="op">=</span> RandomForestClassifier()</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>min_features_to_select <span class="op">=</span> <span class="dv">1</span>  <span class="co"># Minimum number of features to consider</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>rfecv <span class="op">=</span> RFECV(</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>    estimator<span class="op">=</span>svc,</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>    step<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>StratifiedKFold(<span class="dv">5</span>),</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>    scoring<span class="op">=</span><span class="st">"roc_auc"</span>,</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>    min_features_to_select<span class="op">=</span>min_features_to_select,</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>rfecv.fit(X_train, y_train)</span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Optimal number of features : </span><span class="sc">%d</span><span class="st">"</span> <span class="op">%</span> rfecv.n_features_)</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot number of features VS. cross-validation scores</span></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of features selected"</span>)</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cross validation score (accuracy)"</span>)</span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">range</span>(min_features_to_select, <span class="bu">len</span>(rfecv.grid_scores_) <span class="op">+</span> min_features_to_select),</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>    rfecv.grid_scores_,</span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Optimal number of features : 2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\user\anaconda3\envs\ml-challenge-env\lib\site-packages\sklearn\utils\deprecation.py:103: FutureWarning: The `grid_scores_` attribute is deprecated in version 1.0 in favor of `cv_results_` and will be removed in version 1.2.
+  warnings.warn(msg, category=FutureWarning)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-33-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="33">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rfecv.get_feature_names_out()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>array(['B01', 'B09'], dtype=object)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="34">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>clf9 <span class="op">=</span> make_pipeline_with_sampler(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    RandomUnderSampler(random_state<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier(),</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'B01'</span>, <span class="st">'B09'</span>]</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>clf9 <span class="op">=</span> train_test_assess(data_no_clouds[features <span class="op">+</span> [<span class="st">'label_id'</span>]], clf9)</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>calc_feats_importances(clf9[<span class="dv">1</span>], data_no_clouds[features])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 97.59%</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>{'B01': 50.180496359837235, 'B09': 49.819503640162765}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-35-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="satellite-images" class="level2">
+<h2 class="anchored" data-anchor-id="satellite-images">5. Satellite images</h2>
+<p>Now that we have trained a model, let’s try to apply it to the images provided</p>
+<div class="cell" data-execution_count="35">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_images(paths, mask_path<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame()</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> path <span class="kw">in</span> paths:</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> load_image(path)<span class="op">/</span><span class="dv">10000</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> img.flatten()</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>        df[path.split(<span class="st">'.'</span>)[<span class="dv">0</span>].split(<span class="st">'/'</span>)[<span class="dv">1</span>]] <span class="op">=</span> img</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> load_image(mask_path)<span class="op">/</span><span class="dv">255</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> np.mean(mask, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> mask.flatten() <span class="op">&gt;</span> <span class="dv">0</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'mask'</span>] <span class="op">=</span> mask</span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="36">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>imgs <span class="op">=</span> [<span class="st">'data/'</span> <span class="op">+</span> band <span class="op">+</span><span class="st">'.tif'</span> <span class="cf">for</span> band <span class="kw">in</span> bands]</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>sat_imgs <span class="op">=</span> load_images(imgs, mask_path<span class="op">=</span><span class="st">'data/mask.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="37">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_label_image(model, images_df, bands, output_fname<span class="op">=</span><span class="st">'predicted.png'</span>):</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># initialize pred_label column to 10 (a non valid label)</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    images_df.loc[:, <span class="st">'pred_label'</span>] <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># limit the prediction to the pixels where the mask is true</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    images_df.loc[images_df[<span class="st">'mask'</span>] <span class="op">==</span> <span class="va">True</span>, <span class="st">'pred_label'</span>] <span class="op">=</span> model.predict(images_df.loc[images_df[<span class="st">'mask'</span>] <span class="op">==</span> <span class="va">True</span>, bands])</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create RGB predicted label image</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>    images_df.loc[:,<span class="st">'R'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>    images_df.loc[:,<span class="st">'G'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>    images_df.loc[:,<span class="st">'B'</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when the predicted label is 0 (Other) set the value of pixel RED</span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    images_df.loc[images_df[<span class="st">'pred_label'</span>] <span class="op">==</span> <span class="dv">0</span>, <span class="st">'R'</span>] <span class="op">=</span> <span class="dv">255</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when the predicted label is 1 (Sorghum) set the value of pixel GREEN</span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    images_df.loc[images_df[<span class="st">'pred_label'</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="st">'G'</span>] <span class="op">=</span> <span class="dv">255</span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when the predicted label is 2 (Cotton) set the value of pixel BLUE</span></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>    images_df.loc[images_df[<span class="st">'pred_label'</span>] <span class="op">==</span> <span class="dv">2</span>, <span class="st">'B'</span>] <span class="op">=</span> <span class="dv">255</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>    chans <span class="op">=</span> [<span class="st">'R'</span>, <span class="st">'G'</span>, <span class="st">'B'</span>]</span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>    dims <span class="op">=</span> (<span class="dv">4000</span>, <span class="dv">4000</span>)</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>    rgb_label <span class="op">=</span> np.zeros(dims <span class="op">+</span> (<span class="dv">3</span>, ), <span class="st">'uint8'</span>)</span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, chan <span class="kw">in</span> <span class="bu">enumerate</span>(chans):</span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> images_df[chan].to_numpy()</span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>        rgb_label[..., idx] <span class="op">=</span> img.reshape(dims)</span>
+<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> PIL.Image.fromarray(rgb_label)</span>
+<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a>    img.save(output_fname)</span>
+<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-29"><a href="#cb57-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rgb_label</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="38">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'B01'</span>, <span class="st">'B09'</span>]</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>rgb_label <span class="op">=</span> predict_label_image(clf9, sat_imgs.loc[:, features <span class="op">+</span> [<span class="st">'mask'</span>]], features)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="39">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize <span class="op">=</span> (<span class="dv">20</span>,<span class="dv">20</span>))</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> fig.add_subplot(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>) </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>ax.imshow(rgb_label )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x1f009f5d7b0&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="ML-Challenge_files/figure-html/cell-40-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="reminder" class="level2">
+<h2 class="anchored" data-anchor-id="reminder">Reminder</h2>
+<ul>
+<li>Red is Other</li>
+<li>Green is Sorghum</li>
+<li>Blue is Cotton</li>
+</ul>
+</section>
+<section id="observations" class="level2">
+<h2 class="anchored" data-anchor-id="observations">Observations</h2>
+<ul>
+<li>Many paddocks’ predictions are noisy, especially for Sorghum and Other.</li>
+<li>The boundary of the Cotton Paddocks are always mispredicted.</li>
+</ul>
+</section>
+<section id="data-and-training-observation" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-training-observation">Data and training observation</h2>
+<ul>
+<li>The training data is highly imbalanced</li>
+<li>Using weights for the classifier is not the best option</li>
+<li>The generated features (NDVI and NDWI) are not discriminative</li>
+</ul>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
+<ul>
+<li>In the current experiment, we built a pixel classifier. We can build a patch level classifier as a next step, which can potentially reduce the class noise we are seeing in the earlier label image because it would provide more context to the classifier compared to the pixel level classifier.</li>
+<li>Another potential solution to the class noise issue is to introduce more discriminative features by exploring various feature combinations as well as generating new features.</li>
+<li>Improving the quality of the training data by introducing a QA process to the data labelling. The QA process could involving relying on other data sources other than satellite images.</li>
+<li>Hyperparameter tuning can be performed using cross validation and grid search methods as a next step to further improve the model performance (https://towardsdatascience.com/hyperparameter-tuning-the-random-forest-in-python-using-scikit-learn-28d2aa77dd74).</li>
+</ul>
+</section>
+<section id="resources" class="level2">
+<h2 class="anchored" data-anchor-id="resources">Resources</h2>
+<ul>
+<li><a href="https://www.kaggle.com/rafjaa/resampling-strategies-for-imbalanced-datasets">Imbalanced data</a></li>
+<li><a href="https://github.com/robmarkcole/satellite-image-deep-learning">Satellite image deep learning repo</a></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
